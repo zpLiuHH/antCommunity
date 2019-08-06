@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 
 /**
@@ -29,7 +30,9 @@ public class AuthorController {
     private String redirect_uri;
 
     @GetMapping("/callback")
-    public String callback(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state) {
+    public String callback(@RequestParam(name = "code") String code,
+                           @RequestParam(name = "state") String state,
+                           HttpServletRequest reuqest) {
 //        String client_id = "c65a2086684ea6420af8";
 //        String client_secret = "2197fdcbeee14e2d71f2b5f2cbe94c29b4377048";
 //        String redirect_uri = "http://localhost:8887/callback";
@@ -42,7 +45,14 @@ public class AuthorController {
         String accessToken = gitHubProvider.getAccessToken(accessTokenDto);
         GitHubUser user = gitHubProvider.getUser(accessToken);
         System.out.println(user.getName());
-        return "index";
+        if (user != null) {
+            //登录成功 写cookie和session
+            reuqest.getSession().setAttribute("user", user);
+            return "redirect:/";
+        } else {
+            //登录失败，重新登录
+            return "redirect:/";
+        }
     }
 
 }
