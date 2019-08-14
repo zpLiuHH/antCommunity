@@ -1,18 +1,18 @@
 package life.zpliu.community.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import life.zpliu.community.dto.AccessTokenDTO;
 import life.zpliu.community.dto.GitHubUser;
+import life.zpliu.community.mapper.UserMapper;
+import life.zpliu.community.model.UserModel;
 import life.zpliu.community.provider.GitHubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
+import java.util.UUID;
 
 /**
  * @author zpliu
@@ -22,6 +22,9 @@ import java.net.URI;
 public class AuthorController {
     @Autowired
     private GitHubProvider gitHubProvider;
+    @Autowired
+    private UserMapper userMapper;
+
     @Value("{github.client.id}")
     private String client_id;
     @Value("{github.client.secret}")
@@ -32,10 +35,7 @@ public class AuthorController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code") String code,
                            @RequestParam(name = "state") String state,
-                           HttpServletRequest reuqest) {
-//        String client_id = "c65a2086684ea6420af8";
-//        String client_secret = "2197fdcbeee14e2d71f2b5f2cbe94c29b4377048";
-//        String redirect_uri = "http://localhost:8887/callback";
+                           HttpServletRequest request) {
         AccessTokenDTO accessTokenDto = new AccessTokenDTO();
         accessTokenDto.setCode(code);
         accessTokenDto.setState(state);
@@ -47,7 +47,14 @@ public class AuthorController {
         System.out.println(user.getName());
         if (user != null) {
             //登录成功 写cookie和session
-            reuqest.getSession().setAttribute("user", user);
+            UserModel userModel = new UserModel();
+            userModel.setToken(UUID.randomUUID().toString());
+            userModel.setName(user.getName());
+            userModel.setAccountId(user.getId().toString());
+            userModel.setGmtCreate(System.currentTimeMillis());
+            userModel.setGmtModified(userModel.getGmtCreate());
+            userMapper.insert(userModel);
+            request.getSession().setAttribute("user", user);
             return "redirect:/";
         } else {
             //登录失败，重新登录

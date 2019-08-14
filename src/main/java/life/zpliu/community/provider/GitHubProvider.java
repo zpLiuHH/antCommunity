@@ -24,7 +24,7 @@ public class GitHubProvider {
                 .post(body)
                 .build();
         try (Response response = client.newCall(request).execute()) {
-            System.out.print(response.body().string());
+//            System.out.print(response.body().string());
             String callBackStr = response.body().string();
             String[] split = callBackStr.split("&");
             String access_token = split[0].split("=")[1];
