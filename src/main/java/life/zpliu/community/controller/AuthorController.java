@@ -25,11 +25,11 @@ public class AuthorController {
     @Autowired
     private UserMapper userMapper;
 
-    @Value("{github.client.id}")
+    @Value("${github.client.id}")
     private String client_id;
-    @Value("{github.client.secret}")
+    @Value("${github.client.secret}")
     private String client_secret;
-    @Value("{github.redirect.uri}")
+    @Value("${github.redirect.uri}")
     private String redirect_uri;
 
     @GetMapping("/callback")
