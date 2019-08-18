@@ -19,19 +19,23 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
     @Autowired
     UserMapper userMapper;
+
     @GetMapping("/")
     public String index(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies) {
-            if(cookie.getName().equals("token")){
-                String token = cookie.getValue();
-               UserModel user  =  userMapper.findByToken(token);
-               if (user != null){
-                   request.getSession().setAttribute("user", user);
-               }
-               break;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    String token = cookie.getValue();
+                    UserModel user = userMapper.findByToken(token);
+                    if (user != null) {
+                        request.getSession().setAttribute("user", user);
+                    }
+                    break;
+                }
             }
         }
+
         return "index";
     }
 
