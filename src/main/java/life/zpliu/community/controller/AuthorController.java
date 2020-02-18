@@ -54,6 +54,7 @@ public class AuthorController {
             userModel.setAccountId(user.getId().toString());
             userModel.setGmtCreate(System.currentTimeMillis());
             userModel.setGmtModified(userModel.getGmtCreate());
+            userModel.setAvatarUrl(user.getAvatarUrl());
             userMapper.insert(userModel);
             response.addCookie(new Cookie("token",token));
             return "redirect:/";
