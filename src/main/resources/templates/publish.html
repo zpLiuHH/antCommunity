@@ -3,12 +3,12 @@
 <head>
     <title>发布—码虫空间</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <script src="js/jquery.min.js" type="application/javascript"></script>
-    <script src="js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/jquery.min.js" type="application/javascript"></script>
+    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 
-    <link rel="stylesheet" href="css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css"/>
-    <link rel="stylesheet" href="css/community.css"/>
+    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="/css/community.css"/>
 
 </head>
 <body>
@@ -32,6 +32,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <!--<li><a href="https://github.com/login/oauth/authorize?client_id=c65a2086684ea6420af8&-->
                 <!--redirect_uri=http://localhost:8887/callback&scope=user&state=1">Login</a></li>-->
+                <li class="dropdown" th:if="${session.user} !=null"><a href="/publish">发布</a> </li>
                 <li class="dropdown" th:if="${session.user} !=null">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                        aria-expanded="false" th:text="${session.user.getName()}"><span class="caret"></span></a>
@@ -50,24 +51,27 @@
 </nav>
 <div class="container-fluid main">
     <div class="row">
-        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" back>
            <h2><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> 发布</h2>
             <hr/>
-            <form action="/publish">
+            <form action="/publish" method="post">
                 <div class="form-group">
                     <label for="title">问题标题（简单扼要）：</label>
-                    <input type="title" class="form-control" id="title"  name="title" placeholder="title">
+                    <input type="title" class="form-control" th:value="${title}" id="title"  name="title" placeholder="title">
                 </div>
                 <div class="form-group">
                     <label for="description">问题描述：</label>
-                    <textarea class="form-control" rows="5" id="description" name="description"></textarea>
+                    <textarea class="form-control"  th:text="${description}" rows="5"  id="description" name="description"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="tag">问题标签：</label>
-                    <input type="tag" class="form-control" id="tag"  name="tag" placeholder="问题标签，以“，”分隔">
+                    <input type="tag" class="form-control" th:value="${tag}" id="tag"  name="tag" placeholder="问题标签，以“，”分隔">
                 </div>
-                <button type="submit" class="btn btn-success btn-publish">提交</button>
-            <form>
+                <div class="alert alert-warning col-lg-6 col-md-12 col-sm-12 col-xs-12"  th:text="${error}" th:if="${error} !=null"></div>
+                <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+                    <button type="submit" class="btn btn-success btn-publish">提交</button>
+                </div>
+            </form>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <h3>问题发起指南</h3>
