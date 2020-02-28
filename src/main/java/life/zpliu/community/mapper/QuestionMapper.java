@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * @author: liuzhipeng
  * @since: 2020/2/14
@@ -14,8 +16,14 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface QuestionMapper {
 
-    @Insert("insert into question(title,description,tag,creator,gmt_creat,gmt_modified) values (#{title},#{description},#{tag},#{creator},#{gmtCreate},#{gmtModified})")
+    @Insert("insert into question(title,description,tag,creator,gmt_creat,gmt_modified) values (#{title},#{description},#{tag},#{creator},#{gmtCreat},#{gmtModified})")
      void insert(QuestionModel questionModel);
+    @Select("select * from question")
+    List<QuestionModel> list();
+    @Select("select * from question order by id limit #{offset},#{pageSize}")
+    List<QuestionModel> listByPage(@Param(value = "offset")Integer offset,@Param(value ="pageSize")Integer pageSize);
+    @Select("select count(1) from question")
+    Integer queryCount();
 
 //    @Select("select * from question where  = #{}")
 //    UserModel findBy(@Param("") String token);

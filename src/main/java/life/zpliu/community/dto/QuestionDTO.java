@@ -1,5 +1,6 @@
-package life.zpliu.community.model;
+package life.zpliu.community.dto;
 
+import life.zpliu.community.model.UserModel;
 import lombok.Data;
 
 /**
@@ -7,7 +8,7 @@ import lombok.Data;
  * @date 2020/2/14 16:07
  */
 @Data
-public class QuestionModel {
+public class QuestionDTO {
     private Integer id;
     private String title;
     private String description;
@@ -18,4 +19,5 @@ public class QuestionModel {
     private Integer likeCount;
     private Long gmtCreat;
     private Long gmtModified;
+    private UserModel user;
 }
