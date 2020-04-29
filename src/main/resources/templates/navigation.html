@@ -11,7 +11,7 @@
                         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
                     <span class="sr-only">码虫空间</span>
                 </button>
-                <a class="navbar-brand" href="#">码虫空间</a>
+                <a class="navbar-brand" href="/">码虫空间</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <form class="navbar-form navbar-left">
@@ -28,8 +28,8 @@
                             <span th:text="${session.user.getName()}"></span>
                             <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">消息中心</a></li>
-                            <li><a href="#">个人中心</a></li>
+                            <li><a href="/profile/question">我的问题</a></li>
+                            <li><a href="/profile/replies">个人中心</a></li>
                             <li><a href="#">注销</a></li>
                         </ul>
                     </li>

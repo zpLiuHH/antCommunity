@@ -10,6 +10,7 @@ import life.zpliu.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -31,7 +32,9 @@ public class IndexController {
     @GetMapping("/")
     public String index(@RequestParam(name = "offset", defaultValue = "1") Integer offset,
                         @RequestParam(name = "pageSize", defaultValue = "2") Integer pageSize,
-                        HttpServletRequest request, Model model) {
+                        HttpServletRequest request, Model model){
+//                        HttpServletRequest request, Model model,
+//                        @CookieValue(name ="token") String token) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
@@ -45,6 +48,14 @@ public class IndexController {
                 }
             }
         }
+/*        //use  @CookieValue
+            if(token != null && !token.equals("")){
+                UserModel user = userMapper.findByToken(token);
+                if (user != null) {
+                    request.getSession().setAttribute("user", user);
+                }
+            }*/
+
        /* List<QuestionDTO> list = questionService.list();
         if (list != null && list.size() > 0) {
             model.addAttribute("list", list);
