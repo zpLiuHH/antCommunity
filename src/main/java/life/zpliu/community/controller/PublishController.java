@@ -25,8 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 public class PublishController {
 
     @Autowired
-    private UserMapper userMapper;
-    @Autowired
     private QuestionMapper questionMapper;
 
     @GetMapping("/publish")
@@ -47,19 +45,11 @@ public class PublishController {
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);
 
-        UserModel user = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
-                    String token = cookie.getValue();
-                     user = userMapper.findByToken(token);
-                    if (user != null) {
-                        request.getSession().setAttribute("user", user);
-                    }
-                    break;
-                }
-            }
+        UserModel user = (UserModel) request.getSession().getAttribute("user");
+        if (user != null) {
+            request.getSession().setAttribute("user", user);
+        } else {
+            return "redirect:/";
         }
         if(user == null){
             model.addAttribute("error","用户未登录");
@@ -86,7 +76,7 @@ public class PublishController {
         question.setTitle(title);
         question.setDescription(description);
         question.setTag(tag);
-        question.setCreator(user.getId());
+        question.setCreator(Integer.valueOf(user.getAccountId()));
         question.setGmtCreat(System.currentTimeMillis());
         questionMapper.insert(question);
         return "publish";

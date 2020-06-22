@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * @author: liuzhipeng
  * @since: 2019/8/14
@@ -19,6 +21,7 @@ public interface  UserMapper {
     @Select("select * from user where token = #{token}")
     UserModel findByToken(@Param("token")  String token);
 
-    @Select("select * from user where id = #{id}")
-    UserModel findbyId(@Param("id")Integer creator);
+    @Select("select * from user where account_id = #{id}")
+    List<UserModel> findbyId(@Param("id")Integer creator);
+
 }

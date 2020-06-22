@@ -5,6 +5,8 @@ import life.zpliu.community.dto.GitHubUser;
 import life.zpliu.community.mapper.UserMapper;
 import life.zpliu.community.model.UserModel;
 import life.zpliu.community.provider.GitHubProvider;
+import life.zpliu.community.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -20,11 +23,14 @@ import java.util.UUID;
  * @date 2019/6/29 18:31
  */
 @Controller
+@Slf4j
 public class AuthorController {
     @Autowired
     private GitHubProvider gitHubProvider;
     @Autowired
     private UserMapper userMapper;
+//    @Autowired
+//    private UserService userService;
 
     @Value("${github.client.id}")
     private String client_id;
@@ -45,7 +51,7 @@ public class AuthorController {
         accessTokenDto.setRedirect_uri(redirect_uri);
         String accessToken = gitHubProvider.getAccessToken(accessTokenDto);
         GitHubUser user = gitHubProvider.getUser(accessToken);
-        if (user != null) {
+        if (user != null && user.getId() != null) {
             //登录成功 写cookie和session
             UserModel userModel = new UserModel();
             String token = UUID.randomUUID().toString();
@@ -62,6 +68,48 @@ public class AuthorController {
             //登录失败，重新登录
             return "redirect:/";
         }
+    }
+
+
+//    @GetMapping("/callback")
+//    public String callback(@RequestParam(name = "code") String code,
+//                           @RequestParam(name = "state") String state,
+//                           HttpServletResponse response) {
+//        AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
+//        accessTokenDTO.setClient_id(client_id);
+//        accessTokenDTO.setClient_secret(client_secret);
+//        accessTokenDTO.setCode(code);
+//        accessTokenDTO.setRedirect_uri(redirect_uri);
+//        accessTokenDTO.setState(state);
+//        String accessToken = gitHubProvider.getAccessToken(accessTokenDTO);
+//        GitHubUser githubUser = gitHubProvider.getUser(accessToken);
+//        if (githubUser != null && githubUser.getId() != null) {
+//            UserModel user = new UserModel();
+//            String token = UUID.randomUUID().toString();
+//            user.setToken(token);
+//            user.setName(githubUser.getName());
+//            user.setAccountId(String.valueOf(githubUser.getId()));
+//            user.setAvatarUrl(githubUser.getAvatarUrl());
+//            userService.createOrUpdate(user);
+//            Cookie cookie = new Cookie("token", token);
+//            cookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+//            response.addCookie(cookie);
+//            return "redirect:/";
+//        } else {
+//            log.error("callback get github error,{}", githubUser);
+//            // 登录失败，重新登录
+//            return "redirect:/";
+//        }
+//    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 
 }
